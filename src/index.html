@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="application-name" content="leanix-custom-report-tutorial-08">
+  <meta name="description" content="TBD">
+  <meta name="author" content="LeanIX GmbH">
+  <title>Tutorial 08: Querying paginated data in large workspaces</title>
+  <style>
+    [x-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+<body
+  x-data="initializeContext()"
+  x-init="() => {
+    initializeReport()
+    fetchFactSheetPage()
+    $watch('selectedPageSize', () => reset())
+    $watch('endCursor', () => fetchFactSheetPage())
+  }">
+  <div x-cloak class="container mx-auto h-screen flex flex-col space-y-20">
+    <div class="space-y-2 flex flex-col">
+      <label class="font-medium">Page size</label>
+      <div class="flex space-x-2">
+        <template x-for="(pageSize, i) in pageSizes" :key="i">
+          <button
+            @click="selectedPageSize = pageSize"
+            x-text="pageSize === null ? 'Unlimited (max 15000)' : pageSize"
+            class="text-white font-bold py-2 px-4 shadow-md rounded transition-colors duration-100"
+            :class="{
+              'bg-blue-500 cursor-default': selectedPageSize === pageSize,
+              'bg-gray-400 hover:bg-blue-500': selectedPageSize !== pageSize
+            }">
+          </button>
+        </template>
+        <div class="flex-1"></div>
+        <button
+          @click="reset"
+          :disabled="loading"
+          class="bg-gray-300 transition-colors duration-100 text-gray-800 font-bold py-2 px-4 shadow-md rounded inline-flex items-center focus:outline-none"
+          :class="{
+            'opacity-75 cursor-not-allowed': loading,
+            'hover:bg-gray-400': !loading
+          }">
+          <svg
+            class="w-4 h-4 mr-2 transform rotate-180"
+            :class="{
+              'animate-spin': loading
+            }"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          <span>Reload</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex flex-col items-center justify-center space-y-8">
+      <div class="text-3xl font-semibold">
+        <span>FactSheets </span>
+        <span x-text="factSheets.length"></span>
+        /
+        <span x-text="totalCount"></span>
+      </div>
+      <div class="w-full max-w-xl flex justify-center">
+        <div class="bg-gray-300 w-full overflow-hidden rounded-full shadow-md relative h-8">
+          <div
+            class="absolute bg-green-500 inset-y-0"
+            :style="'left: 0; width: ' + completion + '%'">
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-gray-800 text-xl font-medium" x-text="completion.toFixed(1) + '%'"></span>
+          </div>
+        </div>
+      </div>
+      <div class="text-base">
+        <span>Time to first results: </span>
+        <span x-show="timeToFirstResults !== null" x-text="timeToFirstResults + ' ms'"></span>
+      </div>
+      <div class="text-base">
+        <span>Time to load: </span>
+        <span x-show="timeToLoad !== null" x-text="timeToLoad + ' ms'"></span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

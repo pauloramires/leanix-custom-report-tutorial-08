@@ -1,0 +1,53 @@
+{
+  "name": "leanix-custom-report-tutorial-08",
+  "version": "1.0.0",
+  "description": "Tutorial 08: Querying paginated data in large workspaces",
+  "engines": {
+    "node": ">=12.18.3"
+  },
+  "leanixReport": {
+    "id": "net.leanix.tutorial.08",
+    "title": "%title%",
+    "defaultConfig": {}
+  },
+  "scripts": {
+    "build": "lxr build",
+    "start": "lxr start",
+    "upload": "lxr upload",
+    "webpack": "webpack"
+  },
+  "keywords": [
+    "leanix",
+    "custom-report"
+  ],
+  "author": "%author%",
+  "private": true,
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "^8.0.4",
+    "copy-webpack-plugin": "^4.6.0",
+    "css-loader": "^3.2.0",
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "file-loader": "^2.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@leanix/reporting": "^0.3.3",
+    "alpinejs": "^2.7.3",
+    "lodash": "^4.17.11",
+    "postcss-loader": "^4.0.4",
+    "tailwindcss": "^1.9.6"
+  }
+}

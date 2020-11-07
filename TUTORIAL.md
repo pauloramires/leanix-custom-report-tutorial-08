@@ -304,7 +304,7 @@ const  methods = {
     const t0 = performance.now()
     const result = await lx.executeGraphQL(query, variables)
     const t1 = performance.now()
-    const deltaT = t1 - this.t0
+    const deltaT = t1 - t0
     // if the user changed the pageSize while the query was being fetched from the server, and a reset was performed to the state, then discard the results of the query
     if (this.endCursor !== after) return
     // if this is the first page of our dataset (endCursor still null)

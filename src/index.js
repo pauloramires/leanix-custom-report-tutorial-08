@@ -51,7 +51,7 @@ const methods = {
     const t0 = performance.now()
     const result = await lx.executeGraphQL(query, variables)
     const t1 = performance.now()
-    const deltaT = t1 - this.t0
+    const deltaT = t1 - t0
 
     if (this.endCursor !== after) return
     if (after === null) {

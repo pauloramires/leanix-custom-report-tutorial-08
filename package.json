@@ -7,7 +7,7 @@
   },
   "leanixReport": {
     "id": "net.leanix.tutorial.08",
-    "title": "%title%",
+    "title": "Tutorial 08: Querying paginated data in large workspaces",
     "defaultConfig": {}
   },
   "scripts": {

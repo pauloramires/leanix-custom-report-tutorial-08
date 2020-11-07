@@ -1,11 +1,13 @@
 # leanix-custom-report-tutorial-08
 
-%description%
+Tutorial 08: Querying paginated data in large workspaces
 
 ## Table of Contents
 
-- [Project setup](#project-setup)
-- [Available scripts](#available-scripts)
+- [leanix-custom-report-tutorial-08](#leanix-custom-report-tutorial-08)
+  - [Table of Contents](#table-of-contents)
+  - [Project setup](#project-setup)
+  - [Available scripts](#available-scripts)
 
 ## Project setup
 

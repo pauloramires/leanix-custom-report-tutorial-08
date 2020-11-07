@@ -1,12 +1,13 @@
+<!-- src/index.html -->
 <!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="application-name" content="leanix-custom-report-tutorial-08">
-  <meta name="description" content="TBD">
+  <meta name="description" content="Querying paginated data in large workspaces">
   <meta name="author" content="LeanIX GmbH">
-  <title>Tutorial 08: Querying paginated data in large workspaces</title>
+  <title>Querying paginated data in large workspaces</title>
   <style>
     [x-cloak] {
       display: none;
@@ -17,72 +18,50 @@
   x-data="initializeContext()"
   x-init="() => {
     initializeReport()
-    fetchFactSheetPage()
-    $watch('selectedPageSize', () => reset())
-    $watch('endCursor', () => fetchFactSheetPage())
+    // watcher for pageSize variable, triggers reset method
+    $watch('pageSize', () => reset())
+    // watcher for endCursor variable, triggers fetchPage method
+    $watch('endCursor', () => fetchPage())
   }">
-  <div x-cloak class="container mx-auto h-screen flex flex-col space-y-20">
-    <div class="space-y-2 flex flex-col">
-      <label class="font-medium">Page size</label>
-      <div class="flex space-x-2">
-        <template x-for="(pageSize, i) in pageSizes" :key="i">
-          <button
-            @click="selectedPageSize = pageSize"
-            x-text="pageSize === null ? 'Unlimited (max 15000)' : pageSize"
-            class="text-white font-bold py-2 px-4 shadow-md rounded transition-colors duration-100"
-            :class="{
-              'bg-blue-500 cursor-default': selectedPageSize === pageSize,
-              'bg-gray-400 hover:bg-blue-500': selectedPageSize !== pageSize
-            }">
-          </button>
-        </template>
-        <div class="flex-1"></div>
-        <button
-          @click="reset"
-          :disabled="loading"
-          class="bg-gray-300 transition-colors duration-100 text-gray-800 font-bold py-2 px-4 shadow-md rounded inline-flex items-center focus:outline-none"
-          :class="{
-            'opacity-75 cursor-not-allowed': loading,
-            'hover:bg-gray-400': !loading
-          }">
-          <svg
-            class="w-4 h-4 mr-2 transform rotate-180"
-            :class="{
-              'animate-spin': loading
-            }"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-          <span>Reload</span>
-        </button>
-      </div>
+  <div x-cloak class="h-screen text-base flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center mb-10">
+      <div class="text-4xl font-semibold">LeanIX Tutorial</div>
+      <div class="text-2xl font-light">Querying paginated data in large workspaces</div>
     </div>
-    <div class="flex flex-col items-center justify-center space-y-8">
-      <div class="text-3xl font-semibold">
-        <span>FactSheets </span>
-        <span x-text="factSheets.length"></span>
-        /
-        <span x-text="totalCount"></span>
-      </div>
-      <div class="w-full max-w-xl flex justify-center">
-        <div class="bg-gray-300 w-full overflow-hidden rounded-full shadow-md relative h-8">
-          <div
-            class="absolute bg-green-500 inset-y-0"
-            :style="'left: 0; width: ' + completion + '%'">
-          </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-gray-800 text-xl font-medium" x-text="completion.toFixed(1) + '%'"></span>
-          </div>
+    <div class="w-full max-w-lg grid grid-cols-2 space-y-4 space-x-8 rounded p-4 bg-gray-100 shadow border">
+      <div class="col-span-2"></div>
+      <label class="text-2xl font-semibold">Page size</label>
+      <div class="relative">
+        <select
+          x-model.number="pageSize"
+          class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+          <template x-for="size in pageSizes">
+            <option
+              :selected="pageSize === size"
+              :value="size"
+              x-text="size"
+              :key="size">
+            </option>
+          </template>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
         </div>
       </div>
-      <div class="text-base">
-        <span>Time to first results: </span>
-        <span x-show="timeToFirstResults !== null" x-text="timeToFirstResults + ' ms'"></span>
-      </div>
-      <div class="text-base">
-        <span>Time to load: </span>
-        <span x-show="timeToLoad !== null" x-text="timeToLoad + ' ms'"></span>
-      </div>
+      <div class="col-span-2 border-t"></div>
+      <label class="font-semibold">Workspace factsheet count:</label>
+      <div x-text="totalFactSheetCount"></div>
+      <label class="font-semibold">Downloaded factsheets:</label>
+      <div x-text="downloadedFactSheetCount"></div>
+      <label class="font-semibold">Completion ratio:</label>
+      <div x-text="completionRatio"></div>
+      <label class="font-semibold">Time to first results:</label>
+      <div x-text="timeToFirstResults"></div>
+      <label class="font-semibold">Total downloading time:</label>
+      <div x-text="totalDownloadingTime"></div>
+      <label class="font-semibold">Factsheets per second:</label>
+      <div x-text="factSheetsPerSecond"></div>
     </div>
-
   </div>
 </body>
 </html>
